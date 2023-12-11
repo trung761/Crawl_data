@@ -1,5 +1,4 @@
 import pandas as pd
-from nltk.tokenize import sent_tokenize
 from sklearn.feature_extraction.text import TfidfVectorizer, TfidfTransformer
 import csv
 
@@ -10,11 +9,6 @@ df[text_data_column_name] = df[text_data_column_name].fillna('')
 content = {}
 categories_column_name = df.columns[0]
 text_cate = df[categories_column_name].unique()
-
-
-def split_into_sentences(contents):
-    return sent_tokenize(contents)
-
 
 output_file_path = 'TF-IDF.csv'
 with open(output_file_path, 'w', newline='', encoding='utf-8') as csvfile:
@@ -27,7 +21,7 @@ with open(output_file_path, 'w', newline='', encoding='utf-8') as csvfile:
         category_vocabulary = []
 
         # Khởi tạo vectorizer và tfidf_transformer ở đầu vòng lặp
-        vectorizer = TfidfVectorizer()
+        vectorizer = TfidfVectorizer(max_df=0.85, min_df=2, max_features=5000)
         tfidf_transformer = TfidfTransformer()
 
         # Tạo danh sách tất cả các nội dung của category
@@ -38,8 +32,6 @@ with open(output_file_path, 'w', newline='', encoding='utf-8') as csvfile:
         X_tfidf = tfidf_transformer.fit_transform(X)
         vocabulary = vectorizer.get_feature_names_out()
         category_vocabulary.extend(vocabulary)
-        print("TF-IDF:", X_tfidf)
-        print("Vocabulary:", vocabulary)
+
         for sentence, tfidf_value in zip(all_content_text, X_tfidf):
             csv_writer.writerow([category, sentence, tfidf_value])
-        # csv_writer.writerow([category, '', '', ', '.join(vocabulary)])

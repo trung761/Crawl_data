@@ -2,6 +2,7 @@ import re
 import urllib.request
 from bs4 import BeautifulSoup
 import pandas as pd
+import matplotlib.pyplot as plt
 def relative_uri(href):
     return re.compile('^https://').search(href) is None
 url = 'https://vnexpress.net'
@@ -10,13 +11,14 @@ soup = BeautifulSoup(page, 'html.parser')
 news_section = soup.find('section', class_='section wrap-main-nav')
 new_feed = news_section.find_all('a', class_='', href=relative_uri)
 categories1 = ['Thời sự', 'Sức khỏe', 'Đời sống', 'Ý kiến']
-categories2 = ['Thế giới', 'Kinh doanh', 'Khoa học', 'Giải trí', 'Thể thao', 'Pháp luật', 'Giáo dục', 'Xe']
+categories2 = ['Thế giới', 'Kinh doanh', 'Khoa học', 'Giải trí', 'Thể thao', 'Pháp luật', 'Giáo dục', 'Xe', 'Thư giản']
 cate4 = ['Bất động sản']
 cate5 = ['Số hóa']
 data = []
 visited_links = {}
 for feed in new_feed:
     type = feed.get('title')
+    # print(type)
     link = 'https://vnexpress.net' + feed.get('href')
     if type == 'Mới nhất' and link == 'https://vnexpress.net/tin-tuc-24h':
         if type not in visited_links and not link.startswith('https://vnexpress.netjavascript:'):
@@ -96,6 +98,39 @@ for feed in new_feed:
                         visited_links[title_child] = content_child
                         data.append([type, link, title_child, link_title, content_child])
 df = pd.DataFrame(data, columns=['Category', 'URL', 'Title', 'Link_Child', 'Content'])
+# print(df['Category'])
+
+
+# value_counts = df['Category'].value_counts()
+# value_counts_df = value_counts.reset_index()
+# value_counts_df.columns = ['Category', 'Count']
+# value_counts_df.index = value_counts_df.index + 1
+#
+# min_type = value_counts_df['Category'].loc[value_counts_df['Count'].idxmin()]
+# max_type = value_counts_df['Category'].loc[value_counts_df['Count'].idxmax()]
+#
+# min_count = value_counts_df['Count'].min()
+# max_count = value_counts_df['Count'].max()
+# couny= df['Category'].count()
+#
+# print(value_counts_df)
+# print("Tổng số Category: ", couny)
+# print("Type có số lần ít nhất: {}. Số lần xuất hiện: {}".format(min_type, min_count))
+# print("Type có số lần nhiều nhất: {}. Số lần xuất hiện: {}".format(max_type, max_count))
+
+# Trực quan hóa số lượng đếm bằng biểu đồ cột
+# type_counts = df['Category'].value_counts()
+# plt.bar(type_counts.index, type_counts.values)
+# plt.xlabel('Category')
+# plt.ylabel('Counts')
+# plt.title('Số lượng tin tức')
+# # In số lượng lên từng cột
+# for i, v in enumerate(type_counts.values):
+#     plt.text(i, v, str(v), ha='center', va='bottom')
+# plt.xticks(rotation=90)
+# plt.tight_layout()
+# plt.show()
+#
 link_child_by_category = {}
 categories = df['Category'].unique()
 for category in categories:
