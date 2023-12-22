@@ -35,7 +35,7 @@ for feed in new_feed:
                     if title_child not in visited_links and content_child not in visited_links and not link.startswith(
                             'javascript:') and title_child != content_child:
                         visited_links[title_child] = content_child
-                        data.append([type, link, title_child, link_title, content_child])
+                        data.append([type, link_title])
     if type not in visited_links and not link.startswith('https://vnexpress.netjavascript:'):
         page = urllib.request.urlopen(link)
         soup = BeautifulSoup(page, 'html.parser')
@@ -51,7 +51,7 @@ for feed in new_feed:
                     if title_child not in visited_links and content_child not in visited_links and not link.startswith(
                             'javascript:') and title_child != content_child:
                         visited_links[title_child] = content_child
-                        data.append([type, link, title_child, link_title, content_child])
+                        data.append([type, link_title])
     if type not in visited_links and not link.startswith('https://vnexpress.netjavascript:'):
         page = urllib.request.urlopen(link)
         soup = BeautifulSoup(page, 'html.parser')
@@ -67,7 +67,7 @@ for feed in new_feed:
                     if title_child not in visited_links and content_child not in visited_links and not link.startswith(
                             'javascript:') and title_child != content_child:
                         visited_links[title_child] = content_child
-                        data.append([type, link, title_child, link_title, content_child])
+                        data.append([type, link_title])
     if type not in visited_links and not link.startswith('https://vnexpress.netjavascript:'):
         page = urllib.request.urlopen(link)
         soup = BeautifulSoup(page, 'html.parser')
@@ -82,7 +82,7 @@ for feed in new_feed:
                     if title_child not in visited_links and content_child not in visited_links and not link.startswith(
                             'javascript:') and title_child != content_child:
                         visited_links[title_child] = content_child
-                        data.append([type, link, title_child, link_title, content_child])
+                        data.append([type, link_title])
     if type not in visited_links and not link.startswith('https://vnexpress.netjavascript:'):
         page = urllib.request.urlopen(link)
         soup = BeautifulSoup(page, 'html.parser')
@@ -97,9 +97,8 @@ for feed in new_feed:
                     if title_child not in visited_links and content_child not in visited_links and not link.startswith(
                             'javascript:') and title_child != content_child:
                         visited_links[title_child] = content_child
-                        data.append([type, link, title_child, link_title, content_child])
-df = pd.DataFrame(data, columns=['Category', 'URL', 'Title', 'Link_Child', 'Content'])
-
+                        data.append([type, link_title])
+df = pd.DataFrame(data, columns=['Category', 'Link_Child'])
 link_child_by_category = {}
 categories = df['Category'].unique()
 for category in categories:
@@ -108,6 +107,7 @@ for category in categories:
 data_child = []
 for category, links_child in link_child_by_category.items():
     Type = (category)
+    link_child = (links_child)
     for link_child in links_child:
         if link_child.startswith('https://vnexpress.net'):
             page_p_tags = urllib.request.urlopen(link_child)

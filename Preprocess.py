@@ -60,6 +60,3 @@ df[last_column_name] = df[last_column_name].apply(preprocess_text)
 
 df.to_csv(output_file, index=False, encoding='utf-8')
 
-print('\n')
-q = df[first_col_name].unique()
-print(q)
